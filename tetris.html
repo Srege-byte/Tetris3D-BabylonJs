@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Tetris BabylonJS</title>
-        <script src="js/babylon.js"></script>
+        <script src="../js/babylon.js"></script>
         <style>
             html,body, #canvas{
                 width:100%;
@@ -24,7 +24,7 @@
 
             var Camera = new BABYLON.ArcRotateCamera("Camera",0,0,20, new BABYLON.Vector3(0,0,0), Scene);
             
-            BABYLON.SceneLoader.ImportMeshAsync(["T","Z","S","O","L","I","J"], "blocks/", "TetrisBlocks.babylon",Scene).then((result) =>{
+            BABYLON.SceneLoader.ImportMeshAsync(["T","Z","S","O","L","I","J"], "../blocks/", "TetrisBlocks.babylon",Scene).then((result) =>{
                 const T = Scene.getMeshByName("T");
                 const Z = Scene.getMeshByName("Z");
                 const S = Scene.getMeshByName("S");
@@ -32,45 +32,62 @@
                 const L = Scene.getMeshByName("L");
                 const I = Scene.getMeshByName("I");
                 const J = Scene.getMeshByName("J");
-                T.position.x = -6;
-                T.position.z = 0;
-                Z.position.x = -6;
-                Z.position.z = 0;
-                S.position.x = -6;
-                S.position.z = 0;
-                O.position.x = -6;
-                O.position.z = 0;
-                L.position.x = -6;
-                L.position.z = 0;
-                I.position.x = -6;
-                I.position.z = 0;
-                J.position.x = -6;
-                J.position.z = 0;
-
-                engine.runRenderLoop(function(){
-                S.position.x += 0.1;
-                Z.position.x += 0.1;
-                T.position.x += 0.1;
-                J.position.x += 0.1;
-                I.position.x += 0.1;
-                O.position.x += 0.1;
-                L.position.x += 0.1;
-
-                T.isVisible = false;
-                S.isVisible = false;
-                Z.isVisible = false;
-                J.isVisible = false;
-                I.isVisible = false;
-                O.isVisible = false;
-                L.isVisible = false;
+                T.setEnabled(true);
+                Z.setEnabled(false);
+                S.setEnabled(false);
+                O.setEnabled(false);
+                L.setEnabled(false);
+                I.setEnabled(false);
+                J.setEnabled(false);
+                const shapes = ["T","Z","S","O","L","I","J"];
 
                 
-                setTimeout(function(){T.isVisible = true;},10);
-                /*for (var index = 0; index < 1; index++) {
-                    var newInstance = T.createInstance("i" + index);
-                }*/
+                T.position.x = -6;
+                T.position.z = 0;
+                const T1 = T.clone("T2");
+                T1.position.x = 1
+                const Tetris = [];
+                Tetris.push(T, 0, 0, 0);
+    Scene.onKeyboardObservable.add((kbInfo) => {
+        switch (kbInfo.type) {
+            case BABYLON.KeyboardEventTypes.KEYDOWN:
+                switch (kbInfo.event.key) {
+                    case "a":
+                    case "A":
+                        T.rotation.y -= 90;
+                    break
+                    case "d":
+                    case "D":
+                        T.rotation.y += 90;
+                    break
+                    case "w":
+                    case "W":
+                        T.position.x -= 0.1;
+                    break
+                    case "s":
+                    case "S":
+                        T.position.x += 0.1;
+                    break
+                }
+            break;
+        }
+        
             });
-            }); //Name of the model loads one model
+            if (T.intersenctMesh(ground1, true)){
+                T.inputs.clear();
+                const random = Math.floor(Math.random() * shapes.length);
+                shapes[random].clone("shapes");
+            }
+
+            engine.runRenderLoop(function(){
+                T.position.z -= 1;
+                Scene.render();
+            });
+            window.addEventListener("resize", function(){
+                engine.resize();
+                
+            });
+        }); //Name of the model loads one model
 
             var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), Scene);
             light.specular = new BABYLON.Color3(0,0,0);
@@ -104,7 +121,7 @@
 
             window.addEventListener("resize", function(){
                 engine.resize();
-                T,L,J,O,I,Z,S.position.z -= gravity;
+                T,L,J,O,I,Z,S.position.z -= 1;
             });
         </script>
     </body>
