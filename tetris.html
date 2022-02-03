@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Tetris BabylonJS</title>
-        <script src="../js/babylon.js"></script>
+        <script src="js/babylon.js"></script>
         <style>
             html,body, #canvas{
                 width:100%;
@@ -24,7 +24,7 @@
 
             var Camera = new BABYLON.ArcRotateCamera("Camera",0,0,20, new BABYLON.Vector3(0,0,0), Scene);
             
-            BABYLON.SceneLoader.ImportMeshAsync(["T","Z","S","O","L","I","J"], "../blocks/", "TetrisBlocks.babylon",Scene).then((result) =>{
+            BABYLON.SceneLoader.ImportMeshAsync(["T","Z","S","O","L","I","J"], "blocks/", "TetrisBlocks.babylon",Scene).then((result) =>{
                 const T = Scene.getMeshByName("T");
                 const Z = Scene.getMeshByName("Z");
                 const S = Scene.getMeshByName("S");
